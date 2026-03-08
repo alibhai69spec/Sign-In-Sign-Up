@@ -1,0 +1,100 @@
+using System;
+using System.IO;
+
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        string path = "manage.txt";
+
+        if (!File.Exists(path))
+        {
+            File.Create(path).Close();
+        }
+
+        string user = "";
+        string password = "";
+
+        void account()
+        {
+            Console.WriteLine("Sign Up Please!");
+            Console.Write("Enter Your username: ");
+            user = Console.ReadLine();
+
+            Console.Write("Enter your passcode (4 Digits): ");
+            password = Console.ReadLine();
+
+            if (password.Length == 4 && int.TryParse(password, out _))
+            {
+                File.AppendAllText(path, user + "," + password + Environment.NewLine);
+                Console.WriteLine("Account Created!");
+            }
+            else
+            {
+                Console.WriteLine("Password must be exactly 4 digits.");
+            }
+        }
+
+        void signin()
+        {
+            bool found = false;
+
+            Console.Write("Enter User name: ");
+            user = Console.ReadLine();
+
+            Console.Write("Enter 4-digit Password: ");
+            password = Console.ReadLine();
+
+            string[] lines = File.ReadAllLines(path);
+            string check = user + "," + password;
+
+            foreach (string line in lines)
+            {
+                if (line == check)
+                {
+                    Console.WriteLine("Welcome! You are signed in");
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                Console.WriteLine("Account Not found! Type Yes to Sign Up or No to Exit:");
+                string answer = Console.ReadLine();
+
+                if (answer.ToLower() == "yes")
+                {
+                    account();
+                }
+                else
+                {
+                    Console.WriteLine("Program Ended!");
+                }
+            }
+        }
+
+        Console.WriteLine("To Sign Up: Press 0");
+        Console.WriteLine("To Sign In: Press 1");
+
+        if (int.TryParse(Console.ReadLine(), out int choice))
+        {
+            if (choice == 0)
+            {
+                account();
+            }
+            else if (choice == 1)
+            {
+                signin();
+            }
+            else
+            {
+                Console.WriteLine("Invalid Choice.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid Input.");
+        }
+    }
+}
